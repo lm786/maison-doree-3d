@@ -33,7 +33,7 @@ assignment/
 2. Navigate to your `public_html/` directory
 3. Upload the entire `assignment/` folder
 4. Set folder permissions to **2755** (octal) via WinSCP → Properties
-5. Access at: `https://users.sussex.ac.uk/~[yourusername]/assignment/`
+5. Access at: `https://users.sussex.ac.uk/~lm786/assignment/`
 
 ## Features
 
