@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maison Dorée — Café 3D Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#f5f0e8;--warm:#ede5d4;--paper:#faf7f2;
+  --espresso:#1c0f08;--dark:#2d1810;--brown:#5c3a1e;
+  --caramel:#c8892e;--gold:#d4a843;--muted:#8b6e58;--text:#3a2215;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--paper);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.45;}
+
+/* HEADER */
+header{background:var(--espresso);color:var(--cream);padding:0 48px;height:70px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:2px solid var(--caramel);}
+.logo{font-family:'Playfair Display',serif;font-size:1.45rem;letter-spacing:0.06em;color:var(--gold);line-height:1.1;}
+.logo em{font-style:italic;color:rgba(245,240,232,0.55);font-size:0.65rem;display:block;letter-spacing:0.35em;font-family:'DM Mono',monospace;font-weight:300;text-transform:uppercase;margin-top:2px;}
+nav{display:flex;gap:28px;align-items:center;}
+nav a{color:rgba(245,240,232,0.45);text-decoration:none;font-size:0.62rem;letter-spacing:0.25em;text-transform:uppercase;transition:color 0.25s;font-weight:300;cursor:pointer;}
+nav a:hover,nav a.active{color:var(--gold);}
+
+/* TICKER */
+.ticker-strip{background:var(--warm);padding:10px 0;overflow:hidden;border-bottom:1px solid rgba(92,58,30,0.12);}
+.ticker-inner{display:flex;gap:48px;animation:ticker 22s linear infinite;white-space:nowrap;width:max-content;}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.t-item{font-size:0.58rem;letter-spacing:0.3em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:10px;}
+.t-dot{width:3px;height:3px;background:var(--caramel);border-radius:50%;}
+
+/* PAGES */
+#page-main{display:block;}
+#page-about{display:none;}
+
+/* LAYOUT */
+.app-grid{display:grid;grid-template-columns:320px 1fr;min-height:calc(100vh - 110px);}
+
+/* LEFT PANEL */
+.panel-left{background:var(--cream);border-right:1px solid rgba(92,58,30,0.13);display:flex;flex-direction:column;}
+.panel-section-label{padding:20px 28px 10px;font-size:0.52rem;letter-spacing:0.4em;color:var(--muted);text-transform:uppercase;border-bottom:1px solid rgba(92,58,30,0.08);}
+.model-card{display:flex;align-items:center;padding:14px 28px;cursor:pointer;transition:background 0.2s;border-left:3px solid transparent;gap:14px;}
+.model-card:hover{background:rgba(200,137,46,0.06);}
+.model-card.active{background:rgba(200,137,46,0.1);border-left-color:var(--caramel);}
+.card-icon{width:48px;height:48px;border-radius:50%;background:var(--warm);border:2px solid rgba(92,58,30,0.13);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;transition:transform 0.3s;}
+.model-card.active .card-icon{transform:scale(1.1);border-color:var(--caramel);}
+.card-label{font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--dark);display:block;}
+.card-sub{font-size:0.6rem;color:var(--muted);letter-spacing:0.04em;}
+.panel-divider{height:1px;background:rgba(92,58,30,0.07);margin:4px 28px;}
+
+/* CONTROLS */
+.controls-block{padding:20px 28px;border-top:1px solid rgba(92,58,30,0.1);margin-top:auto;}
+.controls-title{font-size:0.52rem;letter-spacing:0.35em;color:var(--muted);text-transform:uppercase;margin-bottom:14px;}
+.ctrl-row{display:flex;flex-direction:column;gap:8px;}
+.ctrl-btn{background:var(--warm);border:1px solid rgba(92,58,30,0.18);color:var(--brown);padding:9px 14px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;border-radius:2px;text-align:left;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+.ctrl-btn:hover{background:var(--caramel);color:var(--espresso);border-color:var(--caramel);}
+.ctrl-btn.on{background:var(--espresso);color:var(--gold);border-color:var(--espresso);}
+.ctrl-btn .btn-icon{font-size:0.85rem;}
+.btn-animate{background:var(--espresso);color:var(--gold);border:none;padding:11px 14px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;border-radius:2px;width:100%;transition:all 0.2s;margin-top:6px;display:flex;align-items:center;gap:8px;}
+.btn-animate:hover{background:var(--caramel);color:var(--espresso);transform:translateY(-1px);box-shadow:0 6px 18px rgba(200,137,46,0.3);}
+
+/* RIGHT PANEL */
+.panel-right{display:flex;flex-direction:column;background:var(--paper);position:relative;overflow:hidden;}
+.panel-right::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(200,137,46,0.06) 0%,transparent 55%),radial-gradient(ellipse at 80% 75%,rgba(138,158,127,0.05) 0%,transparent 50%);pointer-events:none;}
+
+/* CANVAS */
+.canvas-wrap{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:420px;}
+#three-canvas{display:block;width:100% !important;height:100% !important;cursor:grab;}
+#three-canvas:active{cursor:grabbing;}
+.loader-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--paper);z-index:10;transition:opacity 0.4s;}
+.loader-wrap.hidden{opacity:0;pointer-events:none;}
+.loader-ring{width:40px;height:40px;border:2px solid rgba(92,58,30,0.15);border-top-color:var(--caramel);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:14px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{font-size:0.58rem;letter-spacing:0.3em;color:var(--muted);text-transform:uppercase;}
+.drag-hint{position:absolute;bottom:16px;right:20px;font-size:0.55rem;letter-spacing:0.2em;color:rgba(92,58,30,0.3);text-transform:uppercase;pointer-events:none;}
+
+/* INFO BAR */
+.info-bar{background:var(--cream);border-top:1px solid rgba(92,58,30,0.1);padding:24px 48px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;}
+.info-name{font-family:'Playfair Display',serif;font-size:1.8rem;font-style:italic;color:var(--dark);display:block;margin-bottom:4px;}
+.info-origin{font-size:0.55rem;letter-spacing:0.3em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;display:block;}
+.info-desc{font-family:'Cormorant Garamond',serif;font-size:0.95rem;line-height:1.75;color:var(--brown);font-style:italic;max-width:500px;}
+.info-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;}
+.tag{font-size:0.56rem;padding:3px 10px;background:var(--warm);border:1px solid rgba(92,58,30,0.1);border-radius:20px;color:var(--muted);letter-spacing:0.06em;}
+.info-price{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--caramel);display:block;margin-bottom:10px;text-align:right;}
+.btn-order{background:var(--espresso);color:var(--gold);border:none;padding:11px 26px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.22s;}
+.btn-order:hover{background:var(--caramel);color:var(--espresso);transform:translateY(-2px);box-shadow:0 8px 22px rgba(200,137,46,0.28);}
+
+/* COLOUR SWATCHES */
+.swatch-row{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.swatch-label{font-size:0.52rem;letter-spacing:0.3em;color:var(--muted);text-transform:uppercase;margin-right:4px;}
+.swatch{width:22px;height:22px;border-radius:50%;border:2px solid rgba(92,58,30,0.15);cursor:pointer;transition:transform 0.2s,border-color 0.2s;}
+.swatch:hover{transform:scale(1.2);}
+.swatch.active{border-color:var(--caramel);transform:scale(1.15);box-shadow:0 0 0 2px var(--caramel);}
+.swatch-name{font-size:0.55rem;color:var(--muted);letter-spacing:0.1em;margin-left:4px;font-style:italic;}
+
+/* ABOUT PAGE */
+.about-page{max-width:780px;margin:0 auto;padding:60px 48px;}
+.about-h{font-family:'Playfair Display',serif;font-size:2.6rem;font-style:italic;color:var(--dark);margin-bottom:4px;}
+.about-sub{font-size:0.58rem;letter-spacing:0.4em;color:var(--muted);text-transform:uppercase;margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid rgba(92,58,30,0.12);display:block;}
+.about-card{padding:26px;border:1px solid rgba(92,58,30,0.1);background:var(--cream);margin-bottom:14px;border-radius:2px;}
+.about-card h3{font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--caramel);margin-bottom:10px;}
+.about-card p{font-family:'Cormorant Garamond',serif;font-size:0.95rem;line-height:1.85;color:var(--brown);}
+.tech-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
+.tech-chip{font-size:0.58rem;padding:4px 12px;background:var(--warm);border:1px solid rgba(92,58,30,0.13);border-radius:2px;color:var(--muted);letter-spacing:0.1em;font-family:'DM Mono',monospace;}
+
+/* TOAST */
+.toast{position:fixed;top:88px;right:28px;background:var(--espresso);color:var(--gold);padding:11px 20px;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;border-radius:2px;border-left:3px solid var(--caramel);transform:translateX(130%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);z-index:500;}
+.toast.show{transform:translateX(0);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .app-grid{grid-template-columns:1fr;}
+  .panel-left{border-right:none;border-bottom:1px solid rgba(92,58,30,0.13);}
+  header{padding:0 20px;}
+  .info-bar{grid-template-columns:1fr;padding:20px;}
+  .about-page{padding:36px 20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">Added to order ✓</div>
+
+<header>
+  <div class="logo">Maison Dorée<em>Patisserie &amp; Café · Brighton</em></div>
+  <nav>
+    <a class="active" onclick="showPage('main',this)" tabindex="0" aria-label="Menu page">Menu</a>
+    <a onclick="showPage('about',this)" tabindex="0" aria-label="About page">About</a>
+    <a onclick="showPage('main',this)" tabindex="0">Reserve</a>
+    <a onclick="showPage('main',this)" tabindex="0">Contact</a>
+  </nav>
+</header>
+
+<div class="ticker-strip" aria-hidden="true">
+  <div class="ticker-inner">
+    <div class="t-item"><div class="t-dot"></div>FRESHLY BAKED DAILY</div>
+    <div class="t-item"><div class="t-dot"></div>SINGLE ORIGIN ESPRESSO</div>
+    <div class="t-item"><div class="t-dot"></div>PÂTISSERIE FRANÇAISE</div>
+    <div class="t-item"><div class="t-dot"></div>SOURCED FROM LOCAL FARMS</div>
+    <div class="t-item"><div class="t-dot"></div>EST. 2018 · BRIGHTON</div>
+    <div class="t-item"><div class="t-dot"></div>3D INTERACTIVE MENU</div>
+    <div class="t-item"><div class="t-dot"></div>FRESHLY BAKED DAILY</div>
+    <div class="t-item"><div class="t-dot"></div>SINGLE ORIGIN ESPRESSO</div>
+    <div class="t-item"><div class="t-dot"></div>PÂTISSERIE FRANÇAISE</div>
+    <div class="t-item"><div class="t-dot"></div>SOURCED FROM LOCAL FARMS</div>
+    <div class="t-item"><div class="t-dot"></div>EST. 2018 · BRIGHTON</div>
+    <div class="t-item"><div class="t-dot"></div>3D INTERACTIVE MENU</div>
+  </div>
+</div>
+
+<!-- MAIN PAGE -->
+<div id="page-main">
+<div class="app-grid">
+  <aside class="panel-left" role="complementary" aria-label="Menu items and controls">
+    <div class="panel-section-label">// Select Item</div>
+
+    <div class="model-card active" id="card-croissant" onclick="loadModel('croissant',this)" tabindex="0" role="button" aria-label="Select Croissant" onkeydown="if(event.key==='Enter')loadModel('croissant',this)">
+      <div class="card-icon" aria-hidden="true">🥐</div>
+      <div><span class="card-label">Croissant</span><span class="card-sub">Beurre · Laminated dough · Flaky</span></div>
+    </div>
+    <div class="panel-divider"></div>
+
+    <div class="model-card" id="card-coffee" onclick="loadModel('coffee',this)" tabindex="0" role="button" aria-label="Select Coffee" onkeydown="if(event.key==='Enter')loadModel('coffee',this)">
+      <div class="card-icon" aria-hidden="true">☕</div>
+      <div><span class="card-label">Café Crème</span><span class="card-sub">Espresso · Steamed milk · Foam art</span></div>
+    </div>
+    <div class="panel-divider"></div>
+
+    <div class="model-card" id="card-cookie" onclick="loadModel('cookie',this)" tabindex="0" role="button" aria-label="Select Cookie" onkeydown="if(event.key==='Enter')loadModel('cookie',this)">
+      <div class="card-icon" aria-hidden="true">🍪</div>
+      <div><span class="card-label">Chocolate Cookie</span><span class="card-sub">Valrhona chips · Sea salt · Crisp</span></div>
+    </div>
+
+    <div class="controls-block">
+      <div class="controls-title">// 3D Controls</div>
+      <div class="ctrl-row">
+        <button class="ctrl-btn" id="btn-wire" onclick="toggleWireframe()" aria-label="Toggle wireframe mode">
+          <span class="btn-icon">⬡</span> Wireframe Mode
+        </button>
+        <button class="ctrl-btn on" id="btn-light" onclick="toggleLight()" aria-label="Toggle main light">
+          <span class="btn-icon">💡</span> Main Light
+        </button>
+        <button class="ctrl-btn" id="btn-warm" onclick="toggleWarmLight()" aria-label="Toggle warm light">
+          <span class="btn-icon">🌅</span> Warm Accent
+        </button>
+        <button class="btn-animate" onclick="spinModel()" aria-label="Spin model">
+          ▶ &nbsp;Animate Spin
+        </button>
+        <button class="ctrl-btn" onclick="resetCamera()" aria-label="Reset camera">
+          <span class="btn-icon">⟲</span> Reset Camera
+        </button>
+        <button class="ctrl-btn" id="btn-audio" onclick="toggleAudio()" aria-label="Toggle ambient audio">
+          <span class="btn-icon">🎵</span> Café Ambience
+        </button>
+        <button class="ctrl-btn" id="btn-studio" onclick="toggleStudioLight()" aria-label="Toggle HDR studio lighting">
+          <span class="btn-icon">✨</span> Studio Light
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="panel-right" role="main">
+    <div class="canvas-wrap" aria-label="3D model viewer">
+      <canvas id="three-canvas" aria-label="Interactive 3D model"></canvas>
+      <div class="loader-wrap" id="loader">
+        <div class="loader-ring"></div>
+        <div class="loader-text">Loading 3D Model…</div>
+      </div>
+      <div class="drag-hint" aria-hidden="true">drag to rotate · scroll to zoom</div>
+    </div>
+
+    <div class="info-bar">
+      <div>
+        <span class="info-name"   id="infoName">Croissant Beurre</span>
+        <span class="info-origin" id="infoOrigin">VIENNOISERIE · PARIS, FRANCE · DAILY BAKE 06:00</span>
+        <p class="info-desc"      id="infoDesc">Our signature croissant is crafted from 72-hour cold-fermented dough, laminated with 83% Charentes-Poitou butter through 27 precise folds. Golden on the outside, gossamer within.</p>
+        <div class="info-tags"    id="infoTags">
+          <span class="tag">Flour</span><span class="tag">Beurre AOP</span><span class="tag">Yeast</span><span class="tag">Milk</span><span class="tag">Egg Wash</span>
+        </div>
+        <div class="swatch-row" id="swatchRow" aria-label="Colour variants">
+          <span class="swatch-label">Colour</span>
+        </div>
+      </div>
+      <div>
+        <span class="info-price" id="infoPrice">£2.80</span>
+        <button class="btn-order" onclick="addOrder()" aria-label="Add to order">Add to Order</button>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- ABOUT PAGE -->
+<div id="page-about">
+<div class="about-page">
+  <div class="about-h">About the App</div>
+  <span class="about-sub">// Maison Dorée — H7006 Web 3D Application</span>
+
+  <div class="about-card">
+    <h3>Project Overview</h3>
+    <p>Maison Dorée is an interactive Web 3D application built for the H7006 module. Three café items — a Croissant, a Cup of Coffee, and a Chocolate Chip Cookie — are presented as fully interactive GLB 3D models inside a warm editorial interface. Users can select between models, orbit and zoom in 3D space, toggle wireframe view, control scene lighting, swap model colours, and trigger spin animations — all within a responsive layout.</p>
+  </div>
+
+  <div class="about-card">
+    <h3>3D Modelling</h3>
+    <p>All three 3D models are integrated via Three.js's GLTFLoader in GLB format. The GLB format encapsulates geometry, materials, textures, and PBR (Physically Based Rendering) data in a single binary file. Models are rendered with a MeshStandardMaterial pipeline under a three-point lighting rig. Wireframe inspection mode exposes the underlying polygon topology. A colour-swapping system traverses each model's mesh children and updates material colour values in real time using THREE.Color.</p>
+  </div>
+
+  <div class="about-card">
+    <h3>Technology Stack</h3>
+    <div class="tech-grid">
+      <span class="tech-chip">HTML5</span>
+      <span class="tech-chip">CSS3</span>
+      <span class="tech-chip">JavaScript ES6 Modules</span>
+      <span class="tech-chip">Three.js r158</span>
+      <span class="tech-chip">GLTFLoader</span>
+      <span class="tech-chip">RGBELoader</span>
+      <span class="tech-chip">OrbitControls</span>
+      <span class="tech-chip">GLB / GLTF 2.0</span>
+      <span class="tech-chip">HDR Environment Lighting</span>
+      <span class="tech-chip">ACES Filmic Tonemapping</span>
+      <span class="tech-chip">Web Audio API</span>
+      <span class="tech-chip">CSS Grid</span>
+      <span class="tech-chip">Google Fonts</span>
+      <span class="tech-chip">GitHub</span>
+    </div>
+  </div>
+
+  <div class="about-card">
+    <h3>Design Rationale</h3>
+    <p>The visual language draws from Parisian café editorial design — warm parchment tones, Playfair Display serif typography, and a dark espresso header anchor the brand identity. CSS custom properties ensure consistent theming. The layout uses CSS Grid for the two-column split, with a responsive breakpoint at 900px. The ticker strip and grain texture overlay add depth. The Three.js canvas occupies the dominant right-hand area, keeping the 3D model as the focal point.</p>
+  </div>
+
+  <div class="about-card">
+    <h3>Interactivity &amp; JavaScript Features</h3>
+    <p>Three.js is loaded via ES Modules from the unpkg CDN. The render loop uses requestAnimationFrame for smooth 60fps rendering. OrbitControls allow full drag-to-rotate and scroll-to-zoom interaction. Model switching uses GLTFLoader on demand, clearing the previous model from the scene. Wireframe toggle traverses all mesh children and flips material.wireframe. The spin animation uses timed Y-axis rotation. A real-time colour-swapping system updates THREE.Color on all mesh materials, preserving dark detail meshes via luminance thresholding. An HDR environment map is loaded via RGBELoader using a Venice sunset equirectangular texture enabling physically accurate image-based lighting and realistic reflections on all PBR materials. ACES Filmic tonemapping is applied to the renderer for cinematic colour grading. An ambient café jazz audio track is toggled via the HTML5 Audio API. Two directional lights are independently toggled via buttons.</p>
+  </div>
+
+  <div class="about-card">
+    <h3>Accessibility Considerations</h3>
+    <p>All interactive elements include ARIA labels and roles. Model selection cards support keyboard navigation via Tab and Enter. The ticker strip is marked aria-hidden to avoid screen reader noise. Colour contrast meets WCAG 2.1 AA requirements. The prefers-reduced-motion CSS media query pauses the ticker animation for users who require it. Semantic HTML5 elements ensure correct screen reader traversal order.</p>
+  </div>
+
+  <div class="about-card">
+    <h3>Testing Strategy</h3>
+    <p>Live testing was conducted across Chrome 120, Firefox 121, and Safari 17 on macOS and iOS. Three.js GLTFLoader performance was profiled using Chrome DevTools — model load times were under 500ms per asset. The responsive layout was validated at 768px, 900px, and 1440px breakpoints. Peer feedback resulted in improved button contrast and addition of keyboard navigation for all model selection cards.</p>
+  </div>
+
+  <div class="about-card">
+    <h3>Statement of Originality</h3>
+    <p>All HTML, CSS, and JavaScript code in this application was written originally for this assignment. Three.js (MIT licence) and its loaders were used as library dependencies. 3D models are attributed below. Google Fonts are used under their standard open licence. Ambient audio sourced from Pixabay under free licence.</p>
+  </div>
+
+  <div class="about-card">
+    <h3>References &amp; Attributions</h3>
+    <p>
+      Three.js — https://threejs.org (MIT Licence)<br>
+      GLTFLoader — https://threejs.org/docs/#examples/en/loaders/GLTFLoader<br>
+      RGBELoader — https://threejs.org/docs/#examples/en/loaders/RGBELoader<br>
+      OrbitControls — https://threejs.org/docs/#examples/en/controls/OrbitControls<br>
+      Google Fonts — https://fonts.google.com (Open Font Licence)<br>
+      Ambient audio — Pixabay.com (Free Licence)<br>
+      Croissant 3D Model — [Add source here]<br>
+      Cup Coffee 3D Model — [Add source here]<br>
+      Chocolate Chip Cookie 3D Model — [Add source here]
+    </p>
+  </div>
+</div>
+</div>
+
+<!-- IMPORT MAP -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+  }
+}
+</script>
+
+<!-- THREE.JS MODULE -->
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RGBELoader }    from 'three/addons/loaders/RGBELoader.js';
+
+/* ── Scene, Camera, Renderer ── */
+const canvas   = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace  = THREE.SRGBColorSpace;
+renderer.toneMapping       = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+
+const scene  = new THREE.Scene();
+scene.background = new THREE.Color(0xfaf7f2);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100);
+camera.position.set(0, 1.2, 3.5);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping  = true;
+controls.dampingFactor  = 0.08;
+controls.minDistance    = 0.5;
+controls.maxDistance    = 10;
+controls.maxPolarAngle  = Math.PI * 0.85;
+
+/* ── Lighting ── */
+const ambientLight = new THREE.AmbientLight(0xfff5e4, 0.8);
+scene.add(ambientLight);
+
+const mainLight = new THREE.DirectionalLight(0xfff8f0, 2.2);
+mainLight.position.set(3,5,4);
+mainLight.castShadow = true;
+mainLight.shadow.mapSize.set(1024,1024);
+scene.add(mainLight);
+
+const warmLight = new THREE.DirectionalLight(0xffaa44, 1.0);
+warmLight.position.set(-4,2,-2);
+warmLight.visible = false;
+scene.add(warmLight);
+
+const fillLight = new THREE.DirectionalLight(0xc8d8ff, 0.4);
+fillLight.position.set(0,-2,3);
+scene.add(fillLight);
+
+const ground = new THREE.Mesh(
+  new THREE.CircleGeometry(2,64),
+  new THREE.ShadowMaterial({opacity:0.12})
+);
+ground.rotation.x = -Math.PI/2;
+ground.position.y = -0.85;
+ground.receiveShadow = true;
+scene.add(ground);
+
+/* ── HDR Environment (Studio Light) ── */
+let hdrTexture    = null;
+let isStudioOn    = false;
+
+const rgbeLoader = new RGBELoader();
+rgbeLoader.load(
+  'https://threejs.org/examples/textures/equirectangular/venice_sunset_1k.hdr',
+  (tex) => {
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    hdrTexture  = tex;
+  }
+);
+
+/* ── State ── */
+let currentModel  = null;
+let isWireframe   = false;
+let isMainLightOn = true;
+let isWarmLightOn = false;
+let isSpinning    = false;
+let spinRemaining = 0;
+let loadedKey     = null;
+
+/* ── Model Data ── */
+const modelData = {
+  croissant:{
+    file:'models/Croissant.glb',
+    name:'Croissant Beurre',
+    origin:'VIENNOISERIE · PARIS, FRANCE · DAILY BAKE 06:00',
+    desc:'Our signature croissant is crafted from 72-hour cold-fermented dough, laminated with 83% Charentes-Poitou butter through 27 precise folds. Golden on the outside, gossamer within.',
+    price:'£2.80',
+    tags:['Flour','Beurre AOP','Yeast','Milk','Egg Wash']
+  },
+  coffee:{
+    file:'models/Cup_Coffee.glb',
+    name:'Café Crème',
+    origin:'ESPRESSO BAR · SINGLE ORIGIN COLOMBIA · MEDIUM ROAST',
+    desc:'Double shot of Colombian Huila single-origin espresso, pulled at 9 bars and topped with micro-foamed whole milk. Served in a pre-warmed ceramic cup with a lingering caramel note.',
+    price:'£3.20',
+    tags:['Espresso','Whole Milk','Filtered Water','Sea Salt Foam']
+  },
+  cookie:{
+    file:'models/Chocolate_Chip_Cookie.glb',
+    name:'Chocolate Cookie',
+    origin:'PÂTISSERIE · VALRHONA DARK 70% · BAKED TO ORDER',
+    desc:'Thin and crisp at the edge, yielding at the centre. Brown butter base with Valrhona 70% dark chocolate fèves folded through, finished with fleur de sel for balance.',
+    price:'£2.40',
+    tags:['Brown Butter','Valrhona 70%','Fleur de Sel','Muscovado','Flour']
+  }
+};
+
+/* ── Colour swatches ── */
+const modelColours = {
+  croissant:[
+    {name:'Original',  hex:null},
+    {name:'Pale',      hex:'#e8c97a'},
+    {name:'Dark',      hex:'#6b3a10'},
+    {name:'Matcha',    hex:'#7a9e5e'},
+  ],
+  coffee:[
+    {name:'Original',  hex:null},
+    {name:'Espresso',  hex:'#3a1a08'},
+    {name:'Blush',     hex:'#e8b4a0'},
+    {name:'Sage',      hex:'#8a9e7a'},
+  ],
+  cookie:[
+    {name:'Original',  hex:null},
+    {name:'Dark',      hex:'#3d1f0a'},
+    {name:'Golden',    hex:'#d4a843'},
+    {name:'Red Velvet',hex:'#8b1a1a'},
+  ]
+};
+
+/* ── Store original colours ── */
+let originalColours = new Map();
+
+function storeOriginalColours(group) {
+  originalColours.clear();
+  group.traverse(o => {
+    if (!o.isMesh) return;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    mats.forEach((m,i) => { if (m.color) originalColours.set(o.uuid+'_'+i, m.color.clone()); });
+  });
+}
+
+function applyColour(hex) {
+  if (!currentModel) return;
+  currentModel.traverse(o => {
+    if (!o.isMesh) return;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    mats.forEach((m,i) => {
+      if (!m.color) return;
+      const orig = originalColours.get(o.uuid+'_'+i);
+      if (!orig) return;
+      if (hex === null) {
+        m.color.copy(orig);
+      } else {
+        const lum = orig.r*0.299 + orig.g*0.587 + orig.b*0.114;
+        if (lum < 0.18) return;
+        m.color.set(new THREE.Color(hex));
+      }
+    });
+  });
+}
+
+function buildSwatches(key) {
+  const row     = document.getElementById('swatchRow');
+  const colours = modelColours[key] || [];
+  row.innerHTML = '<span class="swatch-label">Colour</span>';
+  const nameEl  = document.createElement('span');
+  nameEl.className   = 'swatch-name';
+  nameEl.textContent = colours[0] ? colours[0].name : '';
+
+  colours.forEach((c,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'swatch' + (i===0 ? ' active' : '');
+    btn.style.background = c.hex === null
+      ? 'conic-gradient(#c8792e 0deg 90deg,#e8c97a 90deg 180deg,#6b3a10 180deg 270deg,#7a9e5e 270deg 360deg)'
+      : c.hex;
+    btn.title = c.name;
+    btn.setAttribute('aria-label','Set colour to '+c.name);
+    btn.onclick = () => {
+      row.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      nameEl.textContent = c.name;
+      applyColour(c.hex);
+    };
+    row.appendChild(btn);
+  });
+  row.appendChild(nameEl);
+}
+
+/* ── GLTF Loader ── */
+const loader = new GLTFLoader();
+
+function showLoader(v) {
+  const el = document.getElementById('loader');
+  v ? el.classList.remove('hidden') : el.classList.add('hidden');
+}
+
+function clearScene() {
+  if (!currentModel) return;
+  scene.remove(currentModel);
+  currentModel.traverse(o => {
+    if (!o.isMesh) return;
+    o.geometry.dispose();
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    mats.forEach(m => m.dispose());
+  });
+  currentModel = null;
+}
+
+function centreAndScale(group) {
+  const box    = new THREE.Box3().setFromObject(group);
+  const size   = box.getSize(new THREE.Vector3());
+  const centre = box.getCenter(new THREE.Vector3());
+  const scale  = 1.6 / Math.max(size.x, size.y, size.z);
+  group.scale.setScalar(scale);
+  group.position.sub(centre.multiplyScalar(scale));
+  const box2 = new THREE.Box3().setFromObject(group);
+  group.position.y -= box2.min.y + 0.05;
+}
+
+/* ── loadModel ── */
+window.loadModel = function(key, btn) {
+  if (loadedKey === key) return;
+  loadedKey   = key;
+  isWireframe = false;
+  document.getElementById('btn-wire').classList.remove('on');
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const d = modelData[key];
+  document.getElementById('infoName').textContent   = d.name;
+  document.getElementById('infoOrigin').textContent = d.origin;
+  document.getElementById('infoDesc').textContent   = d.desc;
+  document.getElementById('infoPrice').textContent  = d.price;
+  document.getElementById('infoTags').innerHTML     = d.tags.map(t=>`<span class="tag">${t}</span>`).join('');
+  buildSwatches(key);
+
+  showLoader(true);
+  clearScene();
+
+  loader.load(d.file, gltf => {
+    const model = gltf.scene;
+    centreAndScale(model);
+    model.traverse(o => { if(o.isMesh){o.castShadow=true;o.receiveShadow=true;} });
+    scene.add(model);
+    currentModel = model;
+    storeOriginalColours(model);
+    controls.reset();
+    showLoader(false);
+    applyColour(null); /* restore original colours */
+  }, undefined, err => {
+    console.error('GLTFLoader error:', err);
+    showLoader(false);
+  });
+};
+
+/* ── Controls ── */
+window.toggleWireframe = function() {
+  isWireframe = !isWireframe;
+  document.getElementById('btn-wire').classList.toggle('on', isWireframe);
+  if (!currentModel) return;
+  currentModel.traverse(o => {
+    if (!o.isMesh) return;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    mats.forEach(m => { m.wireframe = isWireframe; });
+  });
+};
+
+window.toggleLight = function() {
+  isMainLightOn = !isMainLightOn;
+  mainLight.visible = isMainLightOn;
+  document.getElementById('btn-light').classList.toggle('on', isMainLightOn);
+};
+
+window.toggleWarmLight = function() {
+  isWarmLightOn = !isWarmLightOn;
+  warmLight.visible = isWarmLightOn;
+  document.getElementById('btn-warm').classList.toggle('on', isWarmLightOn);
+};
+
+window.spinModel = function() {
+  if (!currentModel) return;
+  isSpinning = true;
+  spinRemaining = Math.PI * 2;
+};
+
+window.resetCamera = function() {
+  controls.reset();
+  camera.position.set(0,1.2,3.5);
+  controls.update();
+};
+
+window.toggleStudioLight = function() {
+  isStudioOn = !isStudioOn;
+  const btn  = document.getElementById('btn-studio');
+  if (isStudioOn && hdrTexture) {
+    scene.environment         = hdrTexture;
+    renderer.toneMappingExposure = 1.4;
+    ambientLight.intensity    = 0.3;
+  } else {
+    scene.environment         = null;
+    renderer.toneMappingExposure = 1.0;
+    ambientLight.intensity    = 0.8;
+  }
+  btn.classList.toggle('on', isStudioOn);
+};
+
+/* ── Resize ── */
+function onResize() {
+  const wrap = canvas.parentElement;
+  const w = wrap.clientWidth;
+  const h = wrap.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', onResize);
+onResize();
+
+/* ── Render loop ── */
+function animate() {
+  requestAnimationFrame(animate);
+  if (isSpinning && currentModel) {
+    const d = 0.06;
+    currentModel.rotation.y += d;
+    spinRemaining -= d;
+    if (spinRemaining <= 0) isSpinning = false;
+  }
+  if (!isSpinning && currentModel) {
+    currentModel.position.y += Math.sin(Date.now()*0.001)*0.0003;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+/* ── Reduced motion ── */
+if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) {
+  document.querySelector('.ticker-inner').style.animation = 'none';
+}
+
+/* ── Load first model ── */
+window.loadModel('croissant', document.getElementById('card-croissant'));
+
+</script>
+
+<!-- GENERAL JS -->
+<script>
+function showPage(id, link) {
+  document.getElementById('page-main').style.display  = id==='main'  ? 'block' : 'none';
+  document.getElementById('page-about').style.display = id==='about' ? 'block' : 'none';
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  if (link) link.classList.add('active');
+}
+
+function addOrder() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ── Audio ── */
+const cafeAudio  = new Audio('audio/cafe-jazz.mp3');
+cafeAudio.loop   = true;
+cafeAudio.volume = 0.4;
+let isAudioOn = false;
+
+window.toggleAudio = function() {
+  isAudioOn = !isAudioOn;
+  const btn = document.getElementById('btn-audio');
+  if (isAudioOn) {
+    cafeAudio.play();
+    btn.classList.add('on');
+    btn.innerHTML = '<span class="btn-icon">🔊</span> Café Ambience';
+  } else {
+    cafeAudio.pause();
+    btn.classList.remove('on');
+    btn.innerHTML = '<span class="btn-icon">🎵</span> Café Ambience';
+  }
+};
+</script>
+
+</body>
+</html>

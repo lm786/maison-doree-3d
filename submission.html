@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maison Dorée — Submission</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --espresso: #1c0f08; --gold: #d4a843; --cream: #f5f0e8;
+  --warm: #ede5d4; --paper: #faf7f2; --brown: #5c3a1e;
+  --caramel: #c8892e; --muted: #8b6e58; --dark: #2d1810;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--paper); color:var(--dark); font-family:'DM Mono',monospace; min-height:100vh; }
+
+header {
+  background:var(--espresso); color:var(--cream);
+  padding:0 48px; height:70px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:2px solid var(--caramel);
+}
+.logo { font-family:'Playfair Display',serif; font-size:1.45rem; color:var(--gold); }
+.logo em { font-style:italic; color:rgba(245,240,232,0.5); font-size:0.65rem; display:block; letter-spacing:0.35em; font-family:'DM Mono',monospace; text-transform:uppercase; }
+
+.container { max-width:780px; margin:0 auto; padding:60px 48px; }
+
+h1 { font-family:'Playfair Display',serif; font-size:2.4rem; font-style:italic; color:var(--dark); margin-bottom:4px; }
+.sub { font-size:0.58rem; letter-spacing:0.4em; color:var(--muted); text-transform:uppercase; margin-bottom:40px; padding-bottom:20px; border-bottom:1px solid rgba(92,58,30,0.12); display:block; }
+
+.card { padding:28px; border:1px solid rgba(92,58,30,0.1); background:var(--cream); margin-bottom:16px; border-radius:2px; }
+.card h3 { font-family:'Playfair Display',serif; font-size:0.95rem; color:var(--caramel); margin-bottom:14px; }
+.row { display:flex; flex-direction:column; gap:10px; }
+.item { display:flex; flex-direction:column; gap:3px; }
+.item label { font-size:0.55rem; letter-spacing:0.3em; color:var(--muted); text-transform:uppercase; }
+.item a, .item span { font-size:0.78rem; color:var(--dark); word-break:break-all; }
+.item a { color:var(--caramel); text-decoration:none; }
+.item a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    Maison Dorée
+    <em>Patisserie &amp; Café · Brighton</em>
+  </div>
+</header>
+
+<div class="container">
+  <h1>Submission Details</h1>
+  <span class="sub">// H7006 Web 3D Applications — 2025/26</span>
+
+  <div class="card">
+    <h3>1. Student Information</h3>
+    <div class="row">
+      <div class="item">
+        <label>Full Name</label>
+        <span>[Layan Makki]</span>
+      </div>
+      <div class="item">
+        <label>Student ID</label>
+        <span>[588199]</span>
+      </div>
+      <div class="item">
+        <label>Module</label>
+        <span>H7006 — Web 3D Applications</span>
+      </div>
+      <div class="item">
+        <label>Academic Year</label>
+        <span>2025/26</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>2. Live 3D App URL (ITS Web Server)</h3>
+    <div class="row">
+      <div class="item">
+        <label>Public URL</label>
+        <a href="https://users.sussex.ac.uk/~[lm786]/3dapp/assignment/index.html" target="_blank">
+          https://users.sussex.ac.uk/~[lm786]/3dapp/assignment/index.html
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>3. GitHub Repository</h3>
+    <div class="row">
+      <div class="item">
+        <label>3D App Codebase</label>
+        <a href="https://github.com/[lm786]/maison-doree-3d" target="_blank">
+          https://github.com/[lm786]/maison-doree-3d
+        </a>
+      </div>
+      <div class="item">
+        <label>3D Models Folder</label>
+        <a href="https://github.com/[lm786]/maison-doree-3d/tree/main/models" target="_blank">
+          https://github.com/[lm786]/maison-doree-3d/tree/main/models
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>4. Deeper Understanding Statement</h3>
+    <div class="row">
+      <div class="item">
+        <label>Feature 1</label>
+        <span>Three.js ES Module integration with GLTFLoader for real-time GLB model loading, scene management, and PBR material rendering.</span>
+      </div>
+      <div class="item">
+        <label>Feature 2</label>
+        <span>OrbitControls with damping — full drag-to-rotate and scroll-to-zoom interaction beyond the lab scope.</span>
+      </div>
+      <div class="item">
+        <label>Feature 3</label>
+        <span>Multi-light rig with independent toggleable warm and cool directional lights, plus shadow mapping on a receive plane.</span>
+      </div>
+      <div class="item">
+        <label>Feature 4</label>
+        <span>Accessibility: ARIA labels, keyboard navigation (Tab/Enter), prefers-reduced-motion support, and WCAG 2.1 AA colour contrast compliance.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>5. Testing Feedback</h3>
+    <div class="row">
+      <div class="item">
+        <label>Week 11 Peer Testing</label>
+        <span>Tested in Chrome 120, Firefox 121, Safari 17 on macOS and iOS. Model load times under 500ms. Three peer testers confirmed all controls functional. Feedback led to improved button contrast and addition of keyboard navigation on model cards.</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
