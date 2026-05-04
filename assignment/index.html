@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison Dorée — Café 3D Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+
+    /* colour variables — easier to change everything from one place */
+    :root {
+      --cream:    #f5f0e8;
+      --warm:     #ede5d4;
+      --paper:    #faf7f2;
+      --espresso: #1c0f08;
+      --dark:     #2d1810;
+      --brown:    #5c3a1e;
+      --caramel:  #c8892e;
+      --gold:     #d4a843;
+      --muted:    #8b6e58;
+      --text:     #3a2215;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ---- HEADER ---- */
+    header {
+      background: var(--espresso);
+      color: var(--cream);
+      padding: 0 48px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      border-bottom: 2px solid var(--caramel);
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      line-height: 1.1;
+    }
+
+    .logo em {
+      font-style: italic;
+      color: rgba(245, 240, 232, 0.55);
+      font-size: 0.65rem;
+      display: block;
+      letter-spacing: 0.35em;
+      font-family: 'DM Mono', monospace;
+      font-weight: 300;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    nav a {
+      color: rgba(245, 240, 232, 0.45);
+      text-decoration: none;
+      font-size: 0.62rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      transition: color 0.25s;
+      font-weight: 300;
+      cursor: pointer;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--gold);
+    }
+
+    /* ---- TICKER STRIP ---- */
+    .ticker-strip {
+      background: var(--warm);
+      padding: 10px 0;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(92, 58, 30, 0.12);
+    }
+
+    .ticker-inner {
+      display: flex;
+      gap: 48px;
+      animation: ticker 22s linear infinite;
+      white-space: nowrap;
+      width: max-content;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .t-item {
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .t-dot {
+      width: 3px;
+      height: 3px;
+      background: var(--caramel);
+      border-radius: 50%;
+    }
+
+    /* ---- PAGE SWITCHING ---- */
+    #page-main  { display: block; }
+    #page-about { display: none; }
+
+    /* ---- MAIN LAYOUT ---- */
+    .app-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      min-height: calc(100vh - 110px);
+    }
+
+    /* ---- LEFT PANEL ---- */
+    .panel-left {
+      background: var(--cream);
+      border-right: 1px solid rgba(92, 58, 30, 0.13);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-section-label {
+      padding: 20px 28px 10px;
+      font-size: 0.52rem;
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(92, 58, 30, 0.08);
+    }
+
+    .model-card {
+      display: flex;
+      align-items: center;
+      padding: 14px 28px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-left: 3px solid transparent;
+      gap: 14px;
+    }
+
+    .model-card:hover {
+      background: rgba(200, 137, 46, 0.06);
+    }
+
+    .model-card.active {
+      background: rgba(200, 137, 46, 0.1);
+      border-left-color: var(--caramel);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--warm);
+      border: 2px solid rgba(92, 58, 30, 0.13);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+
+    .model-card.active .card-icon {
+      transform: scale(1.1);
+      border-color: var(--caramel);
+    }
+
+    .card-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      color: var(--dark);
+      display: block;
+    }
+
+    .card-sub {
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .panel-divider {
+      height: 1px;
+      background: rgba(92, 58, 30, 0.07);
+      margin: 4px 28px;
+    }
+
+    /* ---- CONTROLS BLOCK ---- */
+    .controls-block {
+      padding: 20px 28px;
+      border-top: 1px solid rgba(92, 58, 30, 0.1);
+      margin-top: auto;
+    }
+
+    .controls-title {
+      font-size: 0.52rem;
+      letter-spacing: 0.35em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .ctrl-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ctrl-btn {
+      background: var(--warm);
+      border: 1px solid rgba(92, 58, 30, 0.18);
+      color: var(--brown);
+      padding: 9px 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      text-align: left;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--caramel);
+      color: var(--espresso);
+      border-color: var(--caramel);
+    }
+
+    /* active/on state for toggle buttons */
+    .ctrl-btn.on {
+      background: var(--espresso);
+      color: var(--gold);
+      border-color: var(--espresso);
+    }
+
+    .ctrl-btn .btn-icon {
+      font-size: 0.85rem;
+    }
+
+    .btn-animate {
+      background: var(--espresso);
+      color: var(--gold);
+      border: none;
+      padding: 11px 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      width: 100%;
+      transition: all 0.2s;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-animate:hover {
+      background: var(--caramel);
+      color: var(--espresso);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(200, 137, 46, 0.3);
+    }
+
+    /* ---- RIGHT PANEL ---- */
+    .panel-right {
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(200, 137, 46, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 75%, rgba(138, 158, 127, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* ---- CANVAS AREA ---- */
+    .canvas-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 420px;
+    }
+
+    #three-canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+      cursor: grab;
+    }
+
+    #three-canvas:active {
+      cursor: grabbing;
+    }
+
+    .loader-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--paper);
+      z-index: 10;
+      transition: opacity 0.4s;
+    }
+
+    .loader-wrap.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader-ring {
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(92, 58, 30, 0.15);
+      border-top-color: var(--caramel);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 14px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .drag-hint {
+      position: absolute;
+      bottom: 16px;
+      right: 20px;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      color: rgba(92, 58, 30, 0.3);
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    /* ---- INFO BAR ---- */
+    .info-bar {
+      background: var(--cream);
+      border-top: 1px solid rgba(92, 58, 30, 0.1);
+      padding: 24px 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .info-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      color: var(--dark);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .info-origin {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .info-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--brown);
+      font-style: italic;
+      max-width: 500px;
+    }
+
+    .info-tags {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .tag {
+      font-size: 0.56rem;
+      padding: 3px 10px;
+      background: var(--warm);
+      border: 1px solid rgba(92, 58, 30, 0.1);
+      border-radius: 20px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .info-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--caramel);
+      display: block;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+
+    .btn-order {
+      background: var(--espresso);
+      color: var(--gold);
+      border: none;
+      padding: 11px 26px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.22s;
+    }
+
+    .btn-order:hover {
+      background: var(--caramel);
+      color: var(--espresso);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(200, 137, 46, 0.28);
+    }
+
+    /* ---- COLOUR SWATCHES ---- */
+    .swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .swatch-label {
+      font-size: 0.52rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+
+    .swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(92, 58, 30, 0.15);
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .swatch:hover {
+      transform: scale(1.2);
+    }
+
+    .swatch.active {
+      border-color: var(--caramel);
+      transform: scale(1.15);
+      box-shadow: 0 0 0 2px var(--caramel);
+    }
+
+    .swatch-name {
+      font-size: 0.55rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-left: 4px;
+      font-style: italic;
+    }
+
+    /* ---- ABOUT PAGE ---- */
+    .about-page {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 60px 48px;
+    }
+
+    .about-h {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      font-style: italic;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+
+    .about-sub {
+      font-size: 0.58rem;
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 36px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(92, 58, 30, 0.12);
+      display: block;
+    }
+
+    .about-card {
+      padding: 26px;
+      border: 1px solid rgba(92, 58, 30, 0.1);
+      background: var(--cream);
+      margin-bottom: 14px;
+      border-radius: 2px;
+    }
+
+    .about-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      color: var(--caramel);
+      margin-bottom: 10px;
+    }
+
+    .about-card p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--brown);
+    }
+
+    .tech-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .tech-chip {
+      font-size: 0.58rem;
+      padding: 4px 12px;
+      background: var(--warm);
+      border: 1px solid rgba(92, 58, 30, 0.13);
+      border-radius: 2px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ---- TOAST NOTIFICATION ---- */
+    .toast {
+      position: fixed;
+      top: 88px;
+      right: 28px;
+      background: var(--espresso);
+      color: var(--gold);
+      padding: 11px 20px;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      border-left: 3px solid var(--caramel);
+      transform: translateX(130%);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 500;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 900px) {
+      .app-grid {
+        grid-template-columns: 1fr;
+      }
+      .panel-left {
+        border-right: none;
+        border-bottom: 1px solid rgba(92, 58, 30, 0.13);
+      }
+      header {
+        padding: 0 20px;
+      }
+      .info-bar {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+      .about-page {
+        padding: 36px 20px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast">Added to order ✓</div>
+
+<header>
+  <div class="logo" onclick="showPage('main', document.querySelector('nav a'))" style="cursor:pointer;" title="Back to Menu">
+    Maison Dorée
+    <em>Patisserie &amp; Café · Brighton</em>
+  </div>
+  <nav>
+    <a class="active" onclick="showPage('main', this)">Menu</a>
+    <a onclick="showPage('about', this)">About</a>
+  </nav>
+</header>
+
+<!-- scrolling info strip at the top -->
+<div class="ticker-strip" aria-hidden="true">
+  <div class="ticker-inner">
+    <div class="t-item"><div class="t-dot"></div>FRESHLY BAKED DAILY</div>
+    <div class="t-item"><div class="t-dot"></div>SINGLE ORIGIN ESPRESSO</div>
+    <div class="t-item"><div class="t-dot"></div>PÂTISSERIE FRANÇAISE</div>
+    <div class="t-item"><div class="t-dot"></div>SOURCED FROM LOCAL FARMS</div>
+    <div class="t-item"><div class="t-dot"></div>EST. 2026 · BRIGHTON</div>
+    <div class="t-item"><div class="t-dot"></div>3D INTERACTIVE MENU</div>
+    <!-- duplicate items so the loop looks seamless -->
+    <div class="t-item"><div class="t-dot"></div>FRESHLY BAKED DAILY</div>
+    <div class="t-item"><div class="t-dot"></div>SINGLE ORIGIN ESPRESSO</div>
+    <div class="t-item"><div class="t-dot"></div>PÂTISSERIE FRANÇAISE</div>
+    <div class="t-item"><div class="t-dot"></div>SOURCED FROM LOCAL FARMS</div>
+    <div class="t-item"><div class="t-dot"></div>EST. 2026 · BRIGHTON</div>
+    <div class="t-item"><div class="t-dot"></div>3D INTERACTIVE MENU</div>
+  </div>
+</div>
+
+<!-- MAIN PAGE -->
+<div id="page-main">
+  <div class="app-grid">
+
+    <!-- left sidebar: model selection + controls -->
+    <aside class="panel-left">
+      <div class="panel-section-label">// Select Item</div>
+
+      <div class="model-card active" id="card-croissant" onclick="loadModel('croissant', this)">
+        <div class="card-icon">🥐</div>
+        <div>
+          <span class="card-label">Croissant</span>
+          <span class="card-sub">Beurre · Laminated dough · Flaky</span>
+        </div>
+      </div>
+      <div class="panel-divider"></div>
+
+      <div class="model-card" id="card-coffee" onclick="loadModel('coffee', this)">
+        <div class="card-icon">☕</div>
+        <div>
+          <span class="card-label">Café Crème</span>
+          <span class="card-sub">Espresso · Steamed milk · Foam art</span>
+        </div>
+      </div>
+      <div class="panel-divider"></div>
+
+      <div class="model-card" id="card-cookie" onclick="loadModel('cookie', this)">
+        <div class="card-icon">🍪</div>
+        <div>
+          <span class="card-label">Chocolate Cookie</span>
+          <span class="card-sub">Valrhona chips · Sea salt · Crisp</span>
+        </div>
+      </div>
+
+      <!-- 3D controls section -->
+      <div class="controls-block">
+        <div class="controls-title">// 3D Controls</div>
+        <div class="ctrl-row">
+
+          <button class="ctrl-btn" id="btn-wire" onclick="toggleWireframe()">
+            <span class="btn-icon">⬡</span> Wireframe Mode
+          </button>
+
+          <button class="ctrl-btn on" id="btn-light" onclick="toggleLight()">
+            <span class="btn-icon">💡</span> Main Light
+          </button>
+
+          <button class="ctrl-btn" id="btn-warm" onclick="toggleWarmLight()">
+            <span class="btn-icon">🌅</span> Warm Accent
+          </button>
+
+          <!-- spin animation — onClick as required by brief -->
+          <button class="btn-animate" onclick="spinModel()">
+            ▶ &nbsp;Animate Spin
+          </button>
+
+          <button class="ctrl-btn" onclick="resetCamera()">
+            <span class="btn-icon">⟲</span> Reset Camera
+          </button>
+
+          <button class="ctrl-btn" id="btn-audio" onclick="toggleAudio()">
+            <span class="btn-icon">🎵</span> Café Ambience
+          </button>
+
+          <button class="ctrl-btn" id="btn-studio" onclick="toggleStudioLight()">
+            <span class="btn-icon">✨</span> Studio Light
+          </button>
+
+        </div>
+      </div>
+    </aside>
+
+    <!-- right side: 3D canvas + info -->
+    <main class="panel-right">
+      <div class="canvas-wrap">
+        <canvas id="three-canvas"></canvas>
+        <div class="loader-wrap" id="loader">
+          <div class="loader-ring"></div>
+          <div class="loader-text">Loading 3D Model…</div>
+        </div>
+        <div class="drag-hint">drag to rotate · scroll to zoom</div>
+      </div>
+
+      <div class="info-bar">
+        <div>
+          <span class="info-name"   id="infoName">Croissant Beurre</span>
+          <span class="info-origin" id="infoOrigin">VIENNOISERIE · PARIS, FRANCE · DAILY BAKE 06:00</span>
+          <p class="info-desc"      id="infoDesc">Our signature croissant is crafted from 72-hour cold-fermented dough, laminated with 83% Charentes-Poitou butter through 27 precise folds. Golden on the outside, gossamer within.</p>
+          <div class="info-tags"    id="infoTags">
+            <span class="tag">Flour</span>
+            <span class="tag">Beurre AOP</span>
+            <span class="tag">Yeast</span>
+            <span class="tag">Milk</span>
+            <span class="tag">Egg Wash</span>
+          </div>
+          <div class="swatch-row" id="swatchRow">
+            <span class="swatch-label">Colour</span>
+          </div>
+        </div>
+        <div>
+          <span class="info-price" id="infoPrice">£2.80</span>
+          <button class="btn-order" onclick="addOrder()">Add to Order</button>
+        </div>
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<!-- ABOUT PAGE -->
+<div id="page-about">
+  <div class="about-page">
+    <div class="about-h">About</div>
+    <span class="about-sub">// Maison Dorée — H7006 Web 3D Application — Layan Makki — 588199</span>
+
+    <div class="about-card">
+      <h3>Introduction</h3>
+      <p>For this assignment I created Maison Dorée, a fictional Parisian café presented as an interactive 3D menu. The idea came from wanting to build something that felt like a real product rather than just a technical demo. A café felt like a natural fit because it gave me three visually distinct objects to model including a croissant, a coffee cup, and a chocolate chip cookie, each with different shapes and materials that would showcase the 3D rendering well. The name Maison Dorée means "Golden House" in French, which tied into the warm gold colour scheme I had in mind from the start.</p>
+    </div>
+
+    <div class="about-card">
+      <h3>Creative &amp; Design Decisions</h3>
+      <p>I wanted the overall look to feel like a high-end café menu rather than a typical student web project, so I drew inspiration from editorial food photography and luxury brand websites. I chose a warm parchment colour palette using cream, gold, and deep espresso brown because these colours feel associated with quality food and French patisseries. For typography I picked Playfair Display, an elegant serif font for headings to reinforce the premium feel, and DM Mono for body text to give a clean modern contrast.</p>
+      <p style="margin-top:10px;">The layout uses a two-column CSS Grid with a narrow panel on the left for model selection and controls, and the 3D canvas taking up the larger right-hand area. This was a deliberate decision to keep the 3D model as the focal point of the page at all times. I added a scrolling ticker strip along the top inspired by news tickers and stock market displays, which adds movement and life to the page. All colours are stored in CSS custom properties so the entire palette can be adjusted from one place.</p>
+    </div>
+
+    <div class="about-card">
+      <h3>3D Models &amp; How They Were Produced</h3>
+      <p>The three café items, a Croissant, a Cup of Coffee, and a Chocolate Chip Cookie, were each modelled in Blender 5.0 and exported in GLB (GL Binary) format for integration into the web application. I chose GLB because it packages geometry, materials, and PBR textures into a single binary file, making it efficient to load over the web.</p>
+
+      <!-- Blender model screenshots -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0;">
+        <figure style="margin:0;text-align:center;">
+          <img src="images/croissant_blender.png" alt="Croissant modelled in Blender 5.0"
+               style="width:100%;border-radius:4px;border:1px solid rgba(92,58,30,0.12);display:block;">
+          <figcaption style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-top:7px;">Croissant — Blender 5.0</figcaption>
+        </figure>
+        <figure style="margin:0;text-align:center;">
+          <img src="images/coffee_blender.png" alt="Coffee Cup modelled in Blender 5.0"
+               style="width:100%;border-radius:4px;border:1px solid rgba(92,58,30,0.12);display:block;">
+          <figcaption style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-top:7px;">Coffee Cup — Blender 5.0</figcaption>
+        </figure>
+        <figure style="margin:0;text-align:center;">
+          <img src="images/cookie_blender.png" alt="Chocolate Chip Cookie modelled in Blender 5.0"
+               style="width:100%;border-radius:4px;border:1px solid rgba(92,58,30,0.12);display:block;">
+          <figcaption style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-top:7px;">Chocolate Cookie — Blender 5.0</figcaption>
+        </figure>
+      </div>
+      <p style="margin-top:10px;">Each model was built with the final web rendering in mind, keeping polygon counts reasonable for real-time performance while maintaining enough geometric detail to look convincing when lit. The Chocolate Chip Cookie was the most complex of the three, requiring careful sculpting of the surface irregularities, chocolate chip placement, and the uneven edge profile to give it a realistic baked appearance.</p>
+      <p style="margin-top:10px;">The models are loaded at runtime using Three.js GLTFLoader rather than being embedded in the HTML, which keeps the page lightweight and lets each model load on demand when the user selects it. Each model is automatically centred and scaled in the scene using a Box3 bounding box calculation, so regardless of the original dimensions in Blender, it always displays correctly in the viewport. The models are rendered under a three-point lighting rig consisting of a main directional light simulating overhead café illumination, a warm accent light, and a fill light to give depth and dimension to each object.</p>
+    </div>
+
+    <div class="about-card">
+      <h3>Technology Choices &amp; Rationale</h3>
+      <p>I chose <strong>Three.js</strong> over X3DOM because it felt like the more practical option. It has a much bigger community, the documentation is easier to follow, and it works really well with GLB files which is the format my models were in. Three.js is loaded using an importmap, which is a cleaner way of bringing the library into the page without cluttering the JavaScript.</p>
+      <p style="margin-top:10px;"><strong>OrbitControls</strong> were something I added early on because I wanted users to actually be able to explore the models freely. Dragging to rotate and scrolling to zoom feels natural and makes the 3D element genuinely interactive rather than just decorative. <strong>RGBELoader</strong> was used to power the Studio Light button. It loads a real photograph of a Venice sunset sky and uses it to light the entire scene, which makes the models look far more realistic than basic directional lights alone. I applied ACES Filmic tonemapping to the renderer because it makes the colours look warmer and more cinematic, which suited the café aesthetic I was going for. The <strong>HTML5 Audio API</strong> handles the ambient jazz track and I felt audio really completed the café atmosphere. For the layout I used CSS Grid because it made it straightforward to build the two-column design with the control panel on the left and the 3D viewer taking up the right side.</p>
+      <div class="tech-grid" style="margin-top:12px;">
+        <span class="tech-chip">HTML5</span>
+        <span class="tech-chip">CSS3</span>
+        <span class="tech-chip">JavaScript ES6 Modules</span>
+        <span class="tech-chip">Three.js r158</span>
+        <span class="tech-chip">GLTFLoader</span>
+        <span class="tech-chip">RGBELoader</span>
+        <span class="tech-chip">OrbitControls</span>
+        <span class="tech-chip">GLB / GLTF 2.0</span>
+        <span class="tech-chip">HDR / IBL</span>
+        <span class="tech-chip">ACES Filmic Tonemapping</span>
+        <span class="tech-chip">Web Audio API</span>
+        <span class="tech-chip">CSS Grid</span>
+        <span class="tech-chip">Google Fonts</span>
+        <span class="tech-chip">GitHub</span>
+      </div>
+    </div>
+
+    <div class="about-card">
+      <h3>Interactivity Features</h3>
+      <p>The application includes the following interactive features, all triggered through the user interface:</p>
+      <ul style="margin-top:10px; padding-left:20px; display:flex; flex-direction:column; gap:6px; font-family:'Cormorant Garamond',serif; font-size:0.95rem; line-height:1.75; color:var(--brown); font-style:italic;">
+        <li><strong style="font-style:normal;">Model selection</strong> — clicking a menu item loads the corresponding GLB model and updates the info panel below with the item name, description, ingredients and price.</li>
+        <li><strong style="font-style:normal;">Drag to rotate / scroll to zoom</strong> — OrbitControls allow the user to examine each model from any angle.</li>
+        <li><strong style="font-style:normal;">Wireframe toggle</strong> — switches the model to wireframe view, revealing the underlying polygon geometry.</li>
+        <li><strong style="font-style:normal;">Lighting controls</strong> — two independent light toggles (Main Light and Warm Accent) change how the model is illuminated.</li>
+        <li><strong style="font-style:normal;">Studio Light</strong> — loads an HDR environment map for physically accurate image-based lighting.</li>
+        <li><strong style="font-style:normal;">Colour swatches</strong> — four colour variants per model let the user change the surface colour in real time, with dark details preserved via luminance thresholding.</li>
+        <li><strong style="font-style:normal;">Animate Spin</strong> — triggers a full 360° rotation animation on the model using JavaScript onClick.</li>
+        <li><strong style="font-style:normal;">Café Ambience audio</strong> — toggles an ambient jazz café track via the HTML5 Audio API.</li>
+        <li><strong style="font-style:normal;">Content swapping</strong> — the Menu and About pages swap without reloading the page, handled via JavaScript show/hide.</li>
+      </ul>
+    </div>
+
+    <div class="about-card">
+      <h3>Accessibility</h3>
+      <p>Accessibility was something I wanted to take seriously rather than just tick a box. I added aria-label attributes to the main buttons so that someone using a screen reader would hear a clear description of what each element does. The scrolling ticker strip at the top is purely decorative so I marked it as aria-hidden, which means screen readers skip over it completely and do not read out the repeating text. I also added support for the prefers-reduced-motion setting, so if someone has turned on reduced motion in their device settings, the ticker animation automatically pauses. I used proper semantic HTML elements throughout so screen readers can navigate the page structure easily.</p>
+    </div>
+
+    <div class="about-card">
+      <h3>Testing</h3>
+      <p>Testing was something I had to work through carefully, especially because of how Three.js loads 3D models. The biggest issue I ran into early on was that when I opened the HTML file directly in the browser by double-clicking it, none of the 3D models would appear and the page just kept showing the loading spinner. After looking into it I found this was a CORS (Cross-Origin Resource Sharing) security restriction that browsers enforce when loading local files. I fixed this by using the Live Server extension in VS Code, which runs a proper local server and allows the GLB files to load correctly.</p>
+      <p style="margin-top:10px;">Safari was another challenge because even with Live Server running, Safari still blocked the models from loading. I switched to Chrome for development which worked without any issues. This is also why the final version hosted on the Sussex ITS server works in all browsers, since it runs over a real web server rather than a local file path. I used Chrome DevTools to check how fast the models were loading and each GLB file came in under 500ms which felt reasonable for a web app. I also tested the layout at different screen sizes to make sure the responsive breakpoint at 900px worked properly, collapsing the two-column layout down to a single column on smaller screens.</p>
+      <p style="margin-top:10px;">One usability improvement I made following tutor feedback was making the Maison Dorée logo in the header clickable, so it takes the user back to the main menu from the About page. This is a common navigation convention and users naturally expect clicking a brand logo to bring them back to the home page, so not having it felt like a gap in the experience. Once I implemented it the navigation felt much more intuitive. I also removed the Reserve and Contact links from the navigation since they had no content behind them, which the tutor pointed out looked unfinished and unnecessary.</p>
+    </div>
+
+    <div class="about-card">
+      <h3>References &amp; Attributions</h3>
+      <p>
+        Three.js r158 — https://threejs.org (MIT Licence)<br>
+        Three.js GLTFLoader — https://threejs.org/docs/#examples/en/loaders/GLTFLoader<br>
+        Three.js RGBELoader — https://threejs.org/docs/#examples/en/loaders/RGBELoader<br>
+        Three.js OrbitControls — https://threejs.org/docs/#examples/en/controls/OrbitControls<br>
+        Google Fonts (Playfair Display, DM Mono, Cormorant Garamond) — https://fonts.google.com (OFL)<br>
+        Ambient café audio — Pixabay.com (Free Licence)
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- importmap tells the browser where to find Three.js modules -->
+<script type="importmap">
+{
+  "imports": {
+    "three":          "https://unpkg.com/three@0.158.0/build/three.module.js",
+    "three/addons/":  "https://unpkg.com/three@0.158.0/examples/jsm/"
+  }
+}
+</script>
+
+<!-- Three.js setup — runs as an ES module so imports work -->
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RGBELoader }    from 'three/addons/loaders/RGBELoader.js';
+
+// grab the canvas element
+const canvas = document.getElementById('three-canvas');
+
+// set up the renderer
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+
+// scene and background colour
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xfaf7f2);
+
+// camera — 45 degree FOV, positioned slightly above and back
+const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100);
+camera.position.set(0, 1.2, 3.5);
+
+// orbit controls let the user drag to rotate and scroll to zoom
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 0.5;
+controls.maxDistance = 10;
+controls.maxPolarAngle = Math.PI * 0.85;
+
+// --- Lighting ---
+
+// soft ambient fill so nothing is completely black
+const ambientLight = new THREE.AmbientLight(0xfff5e4, 0.8);
+scene.add(ambientLight);
+
+// main overhead directional light with shadows
+const mainLight = new THREE.DirectionalLight(0xfff8f0, 2.2);
+mainLight.position.set(3, 5, 4);
+mainLight.castShadow = true;
+mainLight.shadow.mapSize.set(1024, 1024);
+scene.add(mainLight);
+
+// warm side light — off by default, user can toggle it
+const warmLight = new THREE.DirectionalLight(0xffaa44, 1.0);
+warmLight.position.set(-4, 2, -2);
+warmLight.visible = false;
+scene.add(warmLight);
+
+// subtle fill from below to soften harsh shadows
+const fillLight = new THREE.DirectionalLight(0xc8d8ff, 0.4);
+fillLight.position.set(0, -2, 3);
+scene.add(fillLight);
+
+// invisible ground plane just to catch shadows
+const ground = new THREE.Mesh(
+  new THREE.CircleGeometry(2, 64),
+  new THREE.ShadowMaterial({ opacity: 0.12 })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -0.85;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// --- HDR environment map (used by Studio Light button) ---
+let hdrTexture = null;
+let isStudioOn = false;
+
+const rgbeLoader = new RGBELoader();
+rgbeLoader.load(
+  'https://threejs.org/examples/textures/equirectangular/venice_sunset_1k.hdr',
+  function(tex) {
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    hdrTexture = tex;
+    // console.log('HDR loaded ok');
+  }
+);
+
+// --- State variables ---
+let currentModel  = null;
+let isWireframe   = false;
+let isMainLightOn = true;
+let isWarmLightOn = false;
+let isSpinning    = false;
+let spinRemaining = 0;
+let loadedKey     = null;
+
+// --- Model data ---
+// each entry holds the file path plus the info panel content
+const modelData = {
+  croissant: {
+    file:   'models/Croissant.glb',
+    name:   'Croissant Beurre',
+    origin: 'VIENNOISERIE · PARIS, FRANCE · DAILY BAKE 06:00',
+    desc:   'Our signature croissant is crafted from 72-hour cold-fermented dough, laminated with 83% Charentes-Poitou butter through 27 precise folds. Golden on the outside, gossamer within.',
+    price:  '£2.80',
+    tags:   ['Flour', 'Beurre AOP', 'Yeast', 'Milk', 'Egg Wash']
+  },
+  coffee: {
+    file:   'models/Cup_Coffee.glb',
+    name:   'Café Crème',
+    origin: 'ESPRESSO BAR · SINGLE ORIGIN COLOMBIA · MEDIUM ROAST',
+    desc:   'Double shot of Colombian Huila single-origin espresso, pulled at 9 bars and topped with micro-foamed whole milk. Served in a pre-warmed ceramic cup with a lingering caramel note.',
+    price:  '£3.20',
+    tags:   ['Espresso', 'Whole Milk', 'Filtered Water', 'Sea Salt Foam']
+  },
+  cookie: {
+    file:   'models/Chocolate_Chip_Cookie.glb',
+    name:   'Chocolate Cookie',
+    origin: 'PÂTISSERIE · VALRHONA DARK 70% · BAKED TO ORDER',
+    desc:   'Thin and crisp at the edge, yielding at the centre. Brown butter base with Valrhona 70% dark chocolate fèves folded through, finished with fleur de sel for balance.',
+    price:  '£2.40',
+    tags:   ['Brown Butter', 'Valrhona 70%', 'Fleur de Sel', 'Muscovado', 'Flour']
+  }
+};
+
+// colour swatch options for each model
+const modelColours = {
+  croissant: [
+    { name: 'Original', hex: null },
+    { name: 'Pale',     hex: '#e8c97a' },
+    { name: 'Dark',     hex: '#6b3a10' },
+    { name: 'Matcha',   hex: '#7a9e5e' }
+  ],
+  coffee: [
+    { name: 'Original', hex: null },
+    { name: 'Espresso', hex: '#3a1a08' },
+    { name: 'Blush',    hex: '#e8b4a0' },
+    { name: 'Sage',     hex: '#8a9e7a' }
+  ],
+  cookie: [
+    { name: 'Original',   hex: null },
+    { name: 'Dark',       hex: '#3d1f0a' },
+    { name: 'Golden',     hex: '#d4a843' },
+    { name: 'Red Velvet', hex: '#8b1a1a' }
+  ]
+};
+
+// store original material colours so we can restore them
+let originalColours = new Map();
+
+function storeOriginalColours(group) {
+  originalColours.clear();
+  group.traverse(function(obj) {
+    if (!obj.isMesh) return;
+    var mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+    mats.forEach(function(m, i) {
+      if (m.color) {
+        originalColours.set(obj.uuid + '_' + i, m.color.clone());
+      }
+    });
+  });
+}
+
+// apply a hex colour to the model, skipping very dark parts
+// (so chocolate chips stay dark when you change the cookie colour)
+function applyColour(hex) {
+  if (!currentModel) return;
+  currentModel.traverse(function(obj) {
+    if (!obj.isMesh) return;
+    var mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+    mats.forEach(function(m, i) {
+      if (!m.color) return;
+      var orig = originalColours.get(obj.uuid + '_' + i);
+      if (!orig) return;
+      if (hex === null) {
+        // restore original
+        m.color.copy(orig);
+      } else {
+        // luminance check — skip dark materials like chocolate chips
+        var lum = orig.r * 0.299 + orig.g * 0.587 + orig.b * 0.114;
+        if (lum < 0.18) return;
+        m.color.set(new THREE.Color(hex));
+      }
+    });
+  });
+}
+
+// build the colour swatch buttons for the selected model
+function buildSwatches(key) {
+  var row     = document.getElementById('swatchRow');
+  var colours = modelColours[key] || [];
+  row.innerHTML = '<span class="swatch-label">Colour</span>';
+
+  var nameEl = document.createElement('span');
+  nameEl.className   = 'swatch-name';
+  nameEl.textContent = colours[0] ? colours[0].name : '';
+
+  colours.forEach(function(c, i) {
+    var btn = document.createElement('button');
+    btn.className = 'swatch' + (i === 0 ? ' active' : '');
+    btn.style.background = c.hex === null
+      ? 'conic-gradient(#c8792e 0deg 90deg, #e8c97a 90deg 180deg, #6b3a10 180deg 270deg, #7a9e5e 270deg 360deg)'
+      : c.hex;
+    btn.title = c.name;
+    btn.onclick = function() {
+      row.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('active'); });
+      btn.classList.add('active');
+      nameEl.textContent = c.name;
+      applyColour(c.hex);
+    };
+    row.appendChild(btn);
+  });
+
+  row.appendChild(nameEl);
+}
+
+// GLTF loader instance
+const loader = new GLTFLoader();
+
+function showLoader(visible) {
+  var el = document.getElementById('loader');
+  if (visible) {
+    el.classList.remove('hidden');
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
+// remove the current model from the scene and free memory
+function clearScene() {
+  if (!currentModel) return;
+  scene.remove(currentModel);
+  currentModel.traverse(function(obj) {
+    if (!obj.isMesh) return;
+    obj.geometry.dispose();
+    var mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+    mats.forEach(function(m) { m.dispose(); });
+  });
+  currentModel = null;
+}
+
+// centre and scale the loaded model so it always fits the viewport nicely
+function centreAndScale(group) {
+  var box    = new THREE.Box3().setFromObject(group);
+  var size   = box.getSize(new THREE.Vector3());
+  var centre = box.getCenter(new THREE.Vector3());
+  var scale  = 1.6 / Math.max(size.x, size.y, size.z);
+  group.scale.setScalar(scale);
+  group.position.sub(centre.multiplyScalar(scale));
+  // nudge it up slightly off the ground
+  var box2 = new THREE.Box3().setFromObject(group);
+  group.position.y -= box2.min.y + 0.05;
+}
+
+// load a model by key — called from the sidebar buttons
+window.loadModel = function(key, btn) {
+  // don't reload if it's already showing
+  if (loadedKey === key) return;
+  loadedKey   = key;
+  isWireframe = false;
+  document.getElementById('btn-wire').classList.remove('on');
+
+  // update active state on sidebar cards
+  document.querySelectorAll('.model-card').forEach(function(c) {
+    c.classList.remove('active');
+  });
+  if (btn) btn.classList.add('active');
+
+  // update the info panel
+  var d = modelData[key];
+  document.getElementById('infoName').textContent   = d.name;
+  document.getElementById('infoOrigin').textContent = d.origin;
+  document.getElementById('infoDesc').textContent   = d.desc;
+  document.getElementById('infoPrice').textContent  = d.price;
+
+  var tagsHtml = '';
+  d.tags.forEach(function(t) {
+    tagsHtml += '<span class="tag">' + t + '</span>';
+  });
+  document.getElementById('infoTags').innerHTML = tagsHtml;
+
+  buildSwatches(key);
+  showLoader(true);
+  clearScene();
+
+  loader.load(d.file, function(gltf) {
+    var model = gltf.scene;
+    centreAndScale(model);
+    model.traverse(function(obj) {
+      if (obj.isMesh) {
+        obj.castShadow    = true;
+        obj.receiveShadow = true;
+      }
+    });
+    scene.add(model);
+    currentModel = model;
+    storeOriginalColours(model);
+    controls.reset();
+    showLoader(false);
+    applyColour(null); // restore original colours on load
+  }, undefined, function(err) {
+    console.error('Error loading model:', err);
+    showLoader(false);
+  });
+};
+
+// --- Button handlers ---
+
+window.toggleWireframe = function() {
+  isWireframe = !isWireframe;
+  document.getElementById('btn-wire').classList.toggle('on', isWireframe);
+  if (!currentModel) return;
+  currentModel.traverse(function(obj) {
+    if (!obj.isMesh) return;
+    var mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+    mats.forEach(function(m) { m.wireframe = isWireframe; });
+  });
+};
+
+window.toggleLight = function() {
+  isMainLightOn = !isMainLightOn;
+  mainLight.visible = isMainLightOn;
+  document.getElementById('btn-light').classList.toggle('on', isMainLightOn);
+};
+
+window.toggleWarmLight = function() {
+  isWarmLightOn = !isWarmLightOn;
+  warmLight.visible = isWarmLightOn;
+  document.getElementById('btn-warm').classList.toggle('on', isWarmLightOn);
+};
+
+// spin the model one full rotation
+window.spinModel = function() {
+  if (!currentModel) return;
+  isSpinning    = true;
+  spinRemaining = Math.PI * 2;
+};
+
+window.resetCamera = function() {
+  controls.reset();
+  camera.position.set(0, 1.2, 3.5);
+  controls.update();
+};
+
+window.toggleStudioLight = function() {
+  isStudioOn = !isStudioOn;
+  var btn = document.getElementById('btn-studio');
+  if (isStudioOn && hdrTexture) {
+    scene.environment = hdrTexture;
+    renderer.toneMappingExposure = 1.4;
+    ambientLight.intensity = 0.3;
+  } else {
+    scene.environment = null;
+    renderer.toneMappingExposure = 1.0;
+    ambientLight.intensity = 0.8;
+  }
+  btn.classList.toggle('on', isStudioOn);
+};
+
+// handle window resize — keep canvas filling its container
+function onResize() {
+  var wrap = canvas.parentElement;
+  var w = wrap.clientWidth;
+  var h = wrap.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', onResize);
+onResize();
+
+// main render loop
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (isSpinning && currentModel) {
+    var step = 0.06;
+    currentModel.rotation.y += step;
+    spinRemaining -= step;
+    if (spinRemaining <= 0) {
+      isSpinning = false;
+    }
+  }
+
+  // gentle idle float when not spinning
+  if (!isSpinning && currentModel) {
+    currentModel.position.y += Math.sin(Date.now() * 0.001) * 0.0003;
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+// pause ticker if user has reduced motion enabled
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.querySelector('.ticker-inner').style.animation = 'none';
+}
+
+// load the first model on page ready
+window.loadModel('croissant', document.getElementById('card-croissant'));
+
+</script>
+
+<!-- General page JS (non-module, so it can be called from inline onclick) -->
+<script>
+
+// switch between the main menu page and the about page
+function showPage(id, link) {
+  document.getElementById('page-main').style.display  = (id === 'main')  ? 'block' : 'none';
+  document.getElementById('page-about').style.display = (id === 'about') ? 'block' : 'none';
+  document.querySelectorAll('nav a').forEach(function(a) {
+    a.classList.remove('active');
+  });
+  if (link) link.classList.add('active');
+}
+
+// show a brief toast notification when the user clicks "Add to Order"
+function addOrder() {
+  var t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(function() {
+    t.classList.remove('show');
+  }, 2500);
+}
+
+// ambient café audio
+var cafeAudio  = new Audio('audio/cafe-jazz.mp3');
+cafeAudio.loop   = true;
+cafeAudio.volume = 0.4;
+var isAudioOn = false;
+
+window.toggleAudio = function() {
+  isAudioOn = !isAudioOn;
+  var btn = document.getElementById('btn-audio');
+  if (isAudioOn) {
+    cafeAudio.play();
+    btn.classList.add('on');
+    btn.innerHTML = '<span class="btn-icon">🔊</span> Café Ambience';
+  } else {
+    cafeAudio.pause();
+    btn.classList.remove('on');
+    btn.innerHTML = '<span class="btn-icon">🎵</span> Café Ambience';
+  }
+};
+
+</script>
+
+</body>
+</html>
